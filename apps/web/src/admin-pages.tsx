@@ -1,8 +1,22 @@
-import type { Category, CreatePostInput, MediaAsset, Post, PostStatus, PostSummary, Tag } from "@donggeuri/shared";
+import type {
+  Category,
+  CreatePostInput,
+  MediaAsset,
+  Post,
+  PostStatus,
+  PostSummary,
+  Tag,
+} from "@donggeuri/shared";
+import { ImagePlus, PenSquare, Plus, Trash2 } from "lucide-react";
 import type { FormEvent } from "react";
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 
+import { Badge } from "./components/ui/badge";
+import { Button } from "./components/ui/button";
+import { Input } from "./components/ui/input";
+import { Select } from "./components/ui/select";
+import { Textarea } from "./components/ui/textarea";
 import {
   createAdminCategory,
   createAdminPost,
@@ -20,7 +34,7 @@ import {
   updateAdminTag,
   uploadMediaAsset,
 } from "./lib/api";
-import { Button, ErrorMessage, LoadingPanel, ShellCard, formatDate, toDateInputValue, toIsoValue } from "./ui";
+import { ErrorMessage, LoadingPanel, ShellCard, formatDate, toDateInputValue, toIsoValue } from "./ui";
 
 type PostFormState = {
   title: string;
@@ -49,6 +63,16 @@ const EMPTY_POST_FORM: PostFormState = {
   status: "draft",
   publishedAt: "",
 };
+
+function statusVariant(status: PostStatus) {
+  if (status === "published") {
+    return "published";
+  }
+  if (status === "draft") {
+    return "draft";
+  }
+  return "archived";
+}
 
 function mapPostToForm(post: Post): PostFormState {
   return {
@@ -82,6 +106,16 @@ function buildPostInput(form: PostFormState): CreatePostInput {
   };
 }
 
+function StatCard(props: { label: string; value: number }) {
+  return (
+    <div className="rounded-[28px] border border-black/5 bg-white/70 p-5 shadow-sm">
+      <p className="section-kicker">Overview</p>
+      <div className="mt-4 text-4xl font-semibold tracking-tight">{props.value}</div>
+      <p className="mt-2 text-sm text-[var(--color-soft-ink)]">{props.label}</p>
+    </div>
+  );
+}
+
 export function DashboardPage() {
   const [posts, setPosts] = useState<PostSummary[]>([]);
   const [media, setMedia] = useState<MediaAsset[]>([]);
@@ -103,36 +137,40 @@ export function DashboardPage() {
 
   return (
     <>
-      <ShellCard title="Workspace status" description="A quick snapshot of the content system.">
+      <ShellCard title="Workspace status" description="A quick editorial snapshot of the current system.">
         <ErrorMessage message={error} />
-        <div className="stats-grid">
-          <div className="stat-box"><strong>{posts.length}</strong><span>Total posts</span></div>
-          <div className="stat-box"><strong>{posts.filter((post) => post.status === "draft").length}</strong><span>Drafts</span></div>
-          <div className="stat-box"><strong>{posts.filter((post) => post.status === "published").length}</strong><span>Published</span></div>
-          <div className="stat-box"><strong>{media.length}</strong><span>Media assets</span></div>
-          <div className="stat-box"><strong>{categories.length}</strong><span>Categories</span></div>
-          <div className="stat-box"><strong>{tags.length}</strong><span>Tags</span></div>
+        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+          <StatCard label="Total posts" value={posts.length} />
+          <StatCard label="Drafts" value={posts.filter((post) => post.status === "draft").length} />
+          <StatCard label="Published" value={posts.filter((post) => post.status === "published").length} />
+          <StatCard label="Media assets" value={media.length} />
+          <StatCard label="Categories" value={categories.length} />
+          <StatCard label="Tags" value={tags.length} />
         </div>
       </ShellCard>
 
-      <ShellCard title="Recent posts" description="Latest edited content from D1.">
+      <ShellCard title="Recent updates" description="The latest content changes in D1.">
         {posts.length ? (
-          <ul className="post-list">
+          <div className="grid gap-4">
             {posts.slice(0, 6).map((post) => (
-              <li key={post.id}>
-                <div>
-                  <strong>{post.title}</strong>
-                  <p className="meta-line">{post.slug}</p>
+              <div key={post.id} className="rounded-[24px] border border-black/5 bg-white/65 p-5">
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                  <div className="space-y-2">
+                    <div className="flex flex-wrap gap-2">
+                      <Badge variant={statusVariant(post.status)}>{post.status}</Badge>
+                    </div>
+                    <h3 className="text-xl font-semibold tracking-tight">{post.title}</h3>
+                    <p className="text-sm text-[var(--color-soft-ink)]">{post.slug}</p>
+                  </div>
+                  <p className="text-sm text-[var(--color-soft-ink)]">{formatDate(post.updatedAt)}</p>
                 </div>
-                <div className="status-stack">
-                  <span className={`status-pill status-pill--${post.status}`}>{post.status}</span>
-                  <small>{formatDate(post.updatedAt)}</small>
-                </div>
-              </li>
+              </div>
             ))}
-          </ul>
+          </div>
         ) : (
-          <div className="empty-state">No posts created yet.</div>
+          <div className="rounded-[24px] bg-[var(--color-paper-muted)] px-5 py-8 text-[var(--color-soft-ink)]">
+            No posts created yet.
+          </div>
         )}
       </ShellCard>
     </>
@@ -172,28 +210,57 @@ export function PostsPage() {
   return (
     <ShellCard
       title="Posts"
-      description="Create, edit, publish, and remove blog content."
-      actions={<Link className="button button--primary" to="/posts/new">New post</Link>}
+      description="Create, edit, publish, and archive content."
+      actions={
+        <Button asChild>
+          <Link to="/posts/new">
+            <Plus className="h-4 w-4" />
+            New post
+          </Link>
+        </Button>
+      }
     >
       <ErrorMessage message={error} />
       {posts.length ? (
-        <ul className="admin-list">
+        <div className="grid gap-4">
           {posts.map((post) => (
-            <li key={post.id}>
-              <div>
-                <strong>{post.title}</strong>
-                <p className="meta-line">{post.slug}</p>
+            <div key={post.id} className="rounded-[24px] border border-black/5 bg-white/65 p-5">
+              <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+                <div className="space-y-3">
+                  <div className="flex flex-wrap gap-2">
+                    <Badge variant={statusVariant(post.status)}>{post.status}</Badge>
+                    <span className="text-sm text-[var(--color-soft-ink)]">{formatDate(post.publishedAt ?? post.updatedAt)}</span>
+                  </div>
+                  <div>
+                    <h3 className="text-2xl font-semibold tracking-tight">{post.title}</h3>
+                    <p className="mt-2 text-sm leading-6 text-[var(--color-soft-ink)]">
+                      {post.excerpt || post.subtitle || post.slug}
+                    </p>
+                  </div>
+                </div>
+                <div className="flex flex-wrap items-center gap-3">
+                  <Button asChild variant="soft">
+                    <Link to={`/posts/${post.id}/edit`}>
+                      <PenSquare className="h-4 w-4" />
+                      Edit
+                    </Link>
+                  </Button>
+                  <Button variant="outline" asChild>
+                    <Link to={`/post/${post.slug}`}>Preview</Link>
+                  </Button>
+                  <Button variant="ghost" onClick={() => void handleDelete(post.id)}>
+                    <Trash2 className="h-4 w-4" />
+                    Delete
+                  </Button>
+                </div>
               </div>
-              <div className="admin-list__actions">
-                <span className={`status-pill status-pill--${post.status}`}>{post.status}</span>
-                <Link className="text-link" to={`/posts/${post.id}/edit`}>Edit</Link>
-                <Button tone="danger" type="button" onClick={() => void handleDelete(post.id)}>Delete</Button>
-              </div>
-            </li>
+            </div>
           ))}
-        </ul>
+        </div>
       ) : (
-        <div className="empty-state">No posts yet. Create the first one from this screen.</div>
+        <div className="rounded-[24px] bg-[var(--color-paper-muted)] px-5 py-8 text-[var(--color-soft-ink)]">
+          No posts yet. Create the first one from this screen.
+        </div>
       )}
     </ShellCard>
   );
@@ -266,58 +333,111 @@ export function PostEditorPage() {
 
   return (
     <ShellCard title={isEdit ? "Edit post" : "Create post"} description="Write content and manage publishing metadata.">
-      <form className="form-grid" onSubmit={handleSubmit}>
-        <div className="field-grid field-grid--two">
-          <label className="field"><span>Title</span><input value={form.title} onChange={(event) => setForm((current) => ({ ...current, title: event.target.value }))} required /></label>
-          <label className="field"><span>Slug</span><input value={form.slug} onChange={(event) => setForm((current) => ({ ...current, slug: event.target.value }))} placeholder="auto-generated if empty" /></label>
+      <form className="grid gap-6" onSubmit={handleSubmit}>
+        <div className="grid gap-4 xl:grid-cols-2">
+          <label className="block">
+            <span className="field-label">Title</span>
+            <Input value={form.title} onChange={(event) => setForm((current) => ({ ...current, title: event.target.value }))} required />
+          </label>
+          <label className="block">
+            <span className="field-label">Slug</span>
+            <Input value={form.slug} onChange={(event) => setForm((current) => ({ ...current, slug: event.target.value }))} placeholder="auto-generated if empty" />
+          </label>
         </div>
-        <div className="field-grid field-grid--two">
-          <label className="field"><span>Subtitle</span><input value={form.subtitle} onChange={(event) => setForm((current) => ({ ...current, subtitle: event.target.value }))} /></label>
-          <label className="field"><span>YouTube URL</span><input value={form.youtubeUrl} onChange={(event) => setForm((current) => ({ ...current, youtubeUrl: event.target.value }))} /></label>
+
+        <div className="grid gap-4 xl:grid-cols-2">
+          <label className="block">
+            <span className="field-label">Subtitle</span>
+            <Input value={form.subtitle} onChange={(event) => setForm((current) => ({ ...current, subtitle: event.target.value }))} />
+          </label>
+          <label className="block">
+            <span className="field-label">YouTube URL</span>
+            <Input value={form.youtubeUrl} onChange={(event) => setForm((current) => ({ ...current, youtubeUrl: event.target.value }))} />
+          </label>
         </div>
-        <label className="field"><span>Excerpt</span><textarea rows={3} value={form.excerpt} onChange={(event) => setForm((current) => ({ ...current, excerpt: event.target.value }))} /></label>
-        <label className="field"><span>Content</span><textarea rows={12} value={form.content} onChange={(event) => setForm((current) => ({ ...current, content: event.target.value }))} required /></label>
-        <div className="field-grid field-grid--three">
-          <label className="field">
-            <span>Status</span>
-            <select value={form.status} onChange={(event) => setForm((current) => ({ ...current, status: event.target.value as PostStatus }))}>
+
+        <label className="block">
+          <span className="field-label">Excerpt</span>
+          <Textarea rows={4} value={form.excerpt} onChange={(event) => setForm((current) => ({ ...current, excerpt: event.target.value }))} />
+        </label>
+
+        <label className="block">
+          <span className="field-label">Content</span>
+          <Textarea rows={16} value={form.content} onChange={(event) => setForm((current) => ({ ...current, content: event.target.value }))} required className="min-h-[360px]" />
+        </label>
+
+        <div className="grid gap-4 xl:grid-cols-3">
+          <label className="block">
+            <span className="field-label">Status</span>
+            <Select value={form.status} onChange={(event) => setForm((current) => ({ ...current, status: event.target.value as PostStatus }))}>
               <option value="draft">Draft</option>
               <option value="published">Published</option>
               <option value="archived">Archived</option>
-            </select>
+            </Select>
           </label>
-          <label className="field"><span>Published at</span><input type="datetime-local" value={form.publishedAt} onChange={(event) => setForm((current) => ({ ...current, publishedAt: event.target.value }))} /></label>
-          <label className="field">
-            <span>Category</span>
-            <select value={form.categoryId} onChange={(event) => setForm((current) => ({ ...current, categoryId: event.target.value }))}>
+          <label className="block">
+            <span className="field-label">Published at</span>
+            <Input type="datetime-local" value={form.publishedAt} onChange={(event) => setForm((current) => ({ ...current, publishedAt: event.target.value }))} />
+          </label>
+          <label className="block">
+            <span className="field-label">Category</span>
+            <Select value={form.categoryId} onChange={(event) => setForm((current) => ({ ...current, categoryId: event.target.value }))}>
               <option value="">No category</option>
-              {categories.map((category) => <option key={category.id} value={category.id}>{category.name}</option>)}
-            </select>
+              {categories.map((category) => (
+                <option key={category.id} value={category.id}>
+                  {category.name}
+                </option>
+              ))}
+            </Select>
           </label>
         </div>
-        <label className="field">
-          <span>Cover image</span>
-          <select value={form.coverImage} onChange={(event) => setForm((current) => ({ ...current, coverImage: event.target.value }))}>
+
+        <label className="block">
+          <span className="field-label">Cover image</span>
+          <Select value={form.coverImage} onChange={(event) => setForm((current) => ({ ...current, coverImage: event.target.value }))}>
             <option value="">No cover image</option>
-            {media.map((asset) => <option key={asset.id} value={asset.url}>{asset.path}</option>)}
-          </select>
+            {media.map((asset) => (
+              <option key={asset.id} value={asset.url}>
+                {asset.path}
+              </option>
+            ))}
+          </Select>
         </label>
-        <div className="field">
-          <span>Tags</span>
-          <div className="checkbox-grid">
+
+        <div className="space-y-3">
+          <span className="field-label">Tags</span>
+          <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
             {tags.map((tag) => (
-              <label key={tag.id} className="checkbox-pill">
-                <input type="checkbox" checked={form.tagIds.includes(tag.id)} onChange={() => handleTagToggle(tag.id)} />
-                <span>{tag.name}</span>
+              <label
+                key={tag.id}
+                className="flex items-center gap-3 rounded-[22px] border border-black/5 bg-white/60 px-4 py-3"
+              >
+                <input
+                  type="checkbox"
+                  checked={form.tagIds.includes(tag.id)}
+                  onChange={() => handleTagToggle(tag.id)}
+                  className="h-4 w-4 rounded border-black/20 text-[var(--color-accent)]"
+                />
+                <span className="text-sm font-medium">{tag.name}</span>
               </label>
             ))}
-            {tags.length === 0 ? <div className="empty-state">Create tags first to attach them here.</div> : null}
+            {tags.length === 0 ? (
+              <div className="rounded-[22px] bg-[var(--color-paper-muted)] px-4 py-4 text-sm text-[var(--color-soft-ink)]">
+                Create tags first to attach them here.
+              </div>
+            ) : null}
           </div>
         </div>
+
         <ErrorMessage message={error} />
-        <div className="actions-row">
-          <Button type="submit" disabled={saving}>{saving ? "Saving..." : isEdit ? "Save changes" : "Create post"}</Button>
-          <Link className="text-link" to="/posts">Back to posts</Link>
+
+        <div className="flex flex-wrap items-center gap-3">
+          <Button type="submit" disabled={saving}>
+            {saving ? "Saving..." : isEdit ? "Save changes" : "Create post"}
+          </Button>
+          <Button variant="outline" asChild>
+            <Link to="/posts">Back to posts</Link>
+          </Button>
         </div>
       </form>
     </ShellCard>
@@ -376,31 +496,52 @@ export function MediaPage() {
   return (
     <>
       <ShellCard title="Upload media" description="Files are stored in R2 and indexed in D1.">
-        <form className="form-grid" onSubmit={handleSubmit}>
-          <label className="field"><span>File</span><input id="media-file-input" type="file" onChange={(event) => setFile(event.target.files?.[0] ?? null)} required /></label>
-          <div className="field-grid field-grid--two">
-            <label className="field"><span>Post slug</span><input value={postSlug} onChange={(event) => setPostSlug(event.target.value)} /></label>
-            <label className="field"><span>Alt text</span><input value={altText} onChange={(event) => setAltText(event.target.value)} /></label>
+        <form className="grid gap-4" onSubmit={handleSubmit}>
+          <label className="block">
+            <span className="field-label">File</span>
+            <Input id="media-file-input" type="file" onChange={(event) => setFile(event.target.files?.[0] ?? null)} required />
+          </label>
+          <div className="grid gap-4 xl:grid-cols-2">
+            <label className="block">
+              <span className="field-label">Post slug</span>
+              <Input value={postSlug} onChange={(event) => setPostSlug(event.target.value)} />
+            </label>
+            <label className="block">
+              <span className="field-label">Alt text</span>
+              <Input value={altText} onChange={(event) => setAltText(event.target.value)} />
+            </label>
           </div>
           <ErrorMessage message={error} />
-          <Button type="submit" disabled={submitting}>{submitting ? "Uploading..." : "Upload asset"}</Button>
+          <Button type="submit" disabled={submitting}>
+            <ImagePlus className="h-4 w-4" />
+            {submitting ? "Uploading..." : "Upload asset"}
+          </Button>
         </form>
       </ShellCard>
 
-      <ShellCard title="Media library" description="Available assets that can be reused in posts.">
+      <ShellCard title="Media library" description="Assets ready for reuse in articles and covers.">
         {assets.length ? (
-          <ul className="media-grid">
+          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
             {assets.map((asset) => (
-              <li key={asset.id}>
-                <strong>{asset.path}</strong>
-                <p className="meta-line">{asset.mimeType}</p>
-                <p className="meta-line">{asset.altText || "No alt text"}</p>
-                <a className="text-link" href={asset.url} target="_blank" rel="noreferrer">Open asset</a>
-              </li>
+              <div key={asset.id} className="rounded-[24px] border border-black/5 bg-white/65 p-5">
+                <div className="space-y-3">
+                  <div className="flex items-start justify-between gap-3">
+                    <Badge variant="default">{asset.mimeType}</Badge>
+                    <span className="text-xs text-[var(--color-soft-ink)]">{Math.round(asset.size / 1024)} KB</span>
+                  </div>
+                  <p className="break-all text-sm font-medium text-[var(--color-ink)]">{asset.path}</p>
+                  <p className="text-sm leading-6 text-[var(--color-soft-ink)]">{asset.altText || "No alt text"}</p>
+                  <a className="text-sm font-medium text-[var(--color-accent)] hover:text-[var(--color-ink)]" href={asset.url} target="_blank" rel="noreferrer">
+                    Open asset
+                  </a>
+                </div>
+              </div>
             ))}
-          </ul>
+          </div>
         ) : (
-          <div className="empty-state">No media uploaded yet.</div>
+          <div className="rounded-[24px] bg-[var(--color-paper-muted)] px-5 py-8 text-[var(--color-soft-ink)]">
+            No media uploaded yet.
+          </div>
         )}
       </ShellCard>
     </>
@@ -417,7 +558,14 @@ export function CategoriesPage() {
     try {
       const categories = await listAdminCategories();
       setItems(categories);
-      setDrafts(Object.fromEntries(categories.map((category) => [category.id, { name: category.name, slug: category.slug, description: category.description ?? "" }])));
+      setDrafts(
+        Object.fromEntries(
+          categories.map((category) => [
+            category.id,
+            { name: category.name, slug: category.slug, description: category.description ?? "" },
+          ]),
+        ),
+      );
       setError(null);
     } catch (reason) {
       setError(reason instanceof Error ? reason.message : "Failed to load categories.");
@@ -430,35 +578,72 @@ export function CategoriesPage() {
 
   return (
     <>
-      <ShellCard title="Create category" description="Manage public post grouping.">
-        <form className="form-grid" onSubmit={(event) => { event.preventDefault(); void createAdminCategory(createForm).then(refresh).then(() => setCreateForm({ name: "", slug: "", description: "" })).catch((reason: Error) => setError(reason.message)); }}>
-          <div className="field-grid field-grid--three">
-            <label className="field"><span>Name</span><input value={createForm.name} onChange={(event) => setCreateForm((current) => ({ ...current, name: event.target.value }))} required /></label>
-            <label className="field"><span>Slug</span><input value={createForm.slug} onChange={(event) => setCreateForm((current) => ({ ...current, slug: event.target.value }))} /></label>
-            <label className="field"><span>Description</span><input value={createForm.description} onChange={(event) => setCreateForm((current) => ({ ...current, description: event.target.value }))} /></label>
+      <ShellCard title="Create category" description="Manage topic shelves for the public archive.">
+        <form
+          className="grid gap-4 xl:grid-cols-3"
+          onSubmit={(event) => {
+            event.preventDefault();
+            void createAdminCategory(createForm)
+              .then(refresh)
+              .then(() => setCreateForm({ name: "", slug: "", description: "" }))
+              .catch((reason: Error) => setError(reason.message));
+          }}
+        >
+          <label className="block">
+            <span className="field-label">Name</span>
+            <Input value={createForm.name} onChange={(event) => setCreateForm((current) => ({ ...current, name: event.target.value }))} required />
+          </label>
+          <label className="block">
+            <span className="field-label">Slug</span>
+            <Input value={createForm.slug} onChange={(event) => setCreateForm((current) => ({ ...current, slug: event.target.value }))} />
+          </label>
+          <label className="block">
+            <span className="field-label">Description</span>
+            <Input value={createForm.description} onChange={(event) => setCreateForm((current) => ({ ...current, description: event.target.value }))} />
+          </label>
+          <div className="xl:col-span-3">
+            <ErrorMessage message={error} />
           </div>
-          <ErrorMessage message={error} />
-          <Button type="submit">Create category</Button>
+          <div className="xl:col-span-3">
+            <Button type="submit">Create category</Button>
+          </div>
         </form>
       </ShellCard>
 
       <ShellCard title="Existing categories" description="Inline edit and cleanup.">
-        <ul className="editor-list">
+        <div className="grid gap-4">
           {items.map((item) => (
-            <li key={item.id}>
-              <div className="field-grid field-grid--three">
-                <label className="field"><span>Name</span><input value={drafts[item.id]?.name ?? ""} onChange={(event) => setDrafts((current) => ({ ...current, [item.id]: { ...current[item.id], name: event.target.value } }))} /></label>
-                <label className="field"><span>Slug</span><input value={drafts[item.id]?.slug ?? ""} onChange={(event) => setDrafts((current) => ({ ...current, [item.id]: { ...current[item.id], slug: event.target.value } }))} /></label>
-                <label className="field"><span>Description</span><input value={drafts[item.id]?.description ?? ""} onChange={(event) => setDrafts((current) => ({ ...current, [item.id]: { ...current[item.id], description: event.target.value } }))} /></label>
+            <div key={item.id} className="rounded-[24px] border border-black/5 bg-white/65 p-5">
+              <div className="grid gap-4 xl:grid-cols-3">
+                <label className="block">
+                  <span className="field-label">Name</span>
+                  <Input value={drafts[item.id]?.name ?? ""} onChange={(event) => setDrafts((current) => ({ ...current, [item.id]: { ...current[item.id], name: event.target.value } }))} />
+                </label>
+                <label className="block">
+                  <span className="field-label">Slug</span>
+                  <Input value={drafts[item.id]?.slug ?? ""} onChange={(event) => setDrafts((current) => ({ ...current, [item.id]: { ...current[item.id], slug: event.target.value } }))} />
+                </label>
+                <label className="block">
+                  <span className="field-label">Description</span>
+                  <Input value={drafts[item.id]?.description ?? ""} onChange={(event) => setDrafts((current) => ({ ...current, [item.id]: { ...current[item.id], description: event.target.value } }))} />
+                </label>
               </div>
-              <div className="actions-row">
-                <Button type="button" onClick={() => void updateAdminCategory(item.id, drafts[item.id]).then(refresh).catch((reason: Error) => setError(reason.message))}>Save</Button>
-                <Button tone="danger" type="button" onClick={() => void deleteAdminCategory(item.id).then(refresh).catch((reason: Error) => setError(reason.message))}>Delete</Button>
+              <div className="mt-4 flex flex-wrap gap-3">
+                <Button type="button" variant="soft" onClick={() => void updateAdminCategory(item.id, drafts[item.id]).then(refresh).catch((reason: Error) => setError(reason.message))}>
+                  Save
+                </Button>
+                <Button type="button" variant="ghost" onClick={() => void deleteAdminCategory(item.id).then(refresh).catch((reason: Error) => setError(reason.message))}>
+                  Delete
+                </Button>
               </div>
-            </li>
+            </div>
           ))}
-          {items.length === 0 ? <li className="empty-state">No categories yet.</li> : null}
-        </ul>
+          {items.length === 0 ? (
+            <div className="rounded-[24px] bg-[var(--color-paper-muted)] px-5 py-8 text-[var(--color-soft-ink)]">
+              No categories yet.
+            </div>
+          ) : null}
+        </div>
       </ShellCard>
     </>
   );
@@ -487,33 +672,64 @@ export function TagsPage() {
 
   return (
     <>
-      <ShellCard title="Create tag" description="Manage keyword metadata for posts.">
-        <form className="form-grid" onSubmit={(event) => { event.preventDefault(); void createAdminTag(createForm).then(refresh).then(() => setCreateForm({ name: "", slug: "" })).catch((reason: Error) => setError(reason.message)); }}>
-          <div className="field-grid field-grid--two">
-            <label className="field"><span>Name</span><input value={createForm.name} onChange={(event) => setCreateForm((current) => ({ ...current, name: event.target.value }))} required /></label>
-            <label className="field"><span>Slug</span><input value={createForm.slug} onChange={(event) => setCreateForm((current) => ({ ...current, slug: event.target.value }))} /></label>
+      <ShellCard title="Create tag" description="Manage lightweight keywords for discovery.">
+        <form
+          className="grid gap-4 xl:grid-cols-2"
+          onSubmit={(event) => {
+            event.preventDefault();
+            void createAdminTag(createForm)
+              .then(refresh)
+              .then(() => setCreateForm({ name: "", slug: "" }))
+              .catch((reason: Error) => setError(reason.message));
+          }}
+        >
+          <label className="block">
+            <span className="field-label">Name</span>
+            <Input value={createForm.name} onChange={(event) => setCreateForm((current) => ({ ...current, name: event.target.value }))} required />
+          </label>
+          <label className="block">
+            <span className="field-label">Slug</span>
+            <Input value={createForm.slug} onChange={(event) => setCreateForm((current) => ({ ...current, slug: event.target.value }))} />
+          </label>
+          <div className="xl:col-span-2">
+            <ErrorMessage message={error} />
           </div>
-          <ErrorMessage message={error} />
-          <Button type="submit">Create tag</Button>
+          <div className="xl:col-span-2">
+            <Button type="submit">Create tag</Button>
+          </div>
         </form>
       </ShellCard>
 
       <ShellCard title="Existing tags" description="Inline edit and cleanup.">
-        <ul className="editor-list">
+        <div className="grid gap-4">
           {items.map((item) => (
-            <li key={item.id}>
-              <div className="field-grid field-grid--two">
-                <label className="field"><span>Name</span><input value={drafts[item.id]?.name ?? ""} onChange={(event) => setDrafts((current) => ({ ...current, [item.id]: { ...current[item.id], name: event.target.value } }))} /></label>
-                <label className="field"><span>Slug</span><input value={drafts[item.id]?.slug ?? ""} onChange={(event) => setDrafts((current) => ({ ...current, [item.id]: { ...current[item.id], slug: event.target.value } }))} /></label>
+            <div key={item.id} className="rounded-[24px] border border-black/5 bg-white/65 p-5">
+              <div className="grid gap-4 xl:grid-cols-2">
+                <label className="block">
+                  <span className="field-label">Name</span>
+                  <Input value={drafts[item.id]?.name ?? ""} onChange={(event) => setDrafts((current) => ({ ...current, [item.id]: { ...current[item.id], name: event.target.value } }))} />
+                </label>
+                <label className="block">
+                  <span className="field-label">Slug</span>
+                  <Input value={drafts[item.id]?.slug ?? ""} onChange={(event) => setDrafts((current) => ({ ...current, [item.id]: { ...current[item.id], slug: event.target.value } }))} />
+                </label>
               </div>
-              <div className="actions-row">
-                <Button type="button" onClick={() => void updateAdminTag(item.id, drafts[item.id]).then(refresh).catch((reason: Error) => setError(reason.message))}>Save</Button>
-                <Button tone="danger" type="button" onClick={() => void deleteAdminTag(item.id).then(refresh).catch((reason: Error) => setError(reason.message))}>Delete</Button>
+              <div className="mt-4 flex flex-wrap gap-3">
+                <Button type="button" variant="soft" onClick={() => void updateAdminTag(item.id, drafts[item.id]).then(refresh).catch((reason: Error) => setError(reason.message))}>
+                  Save
+                </Button>
+                <Button type="button" variant="ghost" onClick={() => void deleteAdminTag(item.id).then(refresh).catch((reason: Error) => setError(reason.message))}>
+                  Delete
+                </Button>
               </div>
-            </li>
+            </div>
           ))}
-          {items.length === 0 ? <li className="empty-state">No tags yet.</li> : null}
-        </ul>
+          {items.length === 0 ? (
+            <div className="rounded-[24px] bg-[var(--color-paper-muted)] px-5 py-8 text-[var(--color-soft-ink)]">
+              No tags yet.
+            </div>
+          ) : null}
+        </div>
       </ShellCard>
     </>
   );

@@ -1,5 +1,9 @@
 import type { ReactNode } from "react";
 
+import { Button as UIButton } from "./components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./components/ui/card";
+import { cn } from "./lib/utils";
+
 export function formatDate(value?: string | null) {
   if (!value) {
     return "Not set";
@@ -21,44 +25,42 @@ export function ShellCard(props: {
   description?: string;
   actions?: ReactNode;
   children: ReactNode;
+  className?: string;
 }) {
   return (
-    <section className="shell-card">
-      <div className="shell-card__header">
-        <div>
-          <p className="eyebrow">Donggeuri</p>
-          <h2>{props.title}</h2>
+    <Card className={cn("overflow-hidden", props.className)}>
+      <CardHeader className="gap-3 border-b border-black/5 bg-white/40">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+          <div className="space-y-2">
+            <p className="section-kicker">Donggeuri</p>
+            <CardTitle>{props.title}</CardTitle>
+            {props.description ? <CardDescription>{props.description}</CardDescription> : null}
+          </div>
+          {props.actions ? <div className="flex flex-wrap gap-3">{props.actions}</div> : null}
         </div>
-        {props.actions ? <div className="actions-row">{props.actions}</div> : null}
-      </div>
-      {props.description ? <p className="shell-copy">{props.description}</p> : null}
-      {props.children}
-    </section>
+      </CardHeader>
+      <CardContent className="p-6">{props.children}</CardContent>
+    </Card>
   );
 }
 
-export function Button(
-  props: React.ButtonHTMLAttributes<HTMLButtonElement> & {
-    tone?: "primary" | "ghost" | "danger";
-  },
-) {
-  return (
-    <button
-      {...props}
-      className={`button button--${props.tone ?? "primary"} ${props.className ?? ""}`.trim()}
-    />
-  );
-}
+export const Button = UIButton;
 
 export function ErrorMessage(props: { message: string | null }) {
-  return props.message ? <p className="error-text">{props.message}</p> : null;
+  return props.message ? (
+    <div className="rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm font-medium text-rose-700">
+      {props.message}
+    </div>
+  ) : null;
 }
 
 export function LoadingPanel(props: { message: string }) {
   return (
-    <div className="main-column">
+    <div className="mx-auto w-full max-w-3xl">
       <ShellCard title="Loading" description={props.message}>
-        <div className="empty-state">Please wait a moment.</div>
+        <div className="rounded-[24px] bg-[var(--color-paper-muted)] px-5 py-6 text-sm text-[var(--color-soft-ink)]">
+          Please wait a moment.
+        </div>
       </ShellCard>
     </div>
   );

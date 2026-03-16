@@ -4,6 +4,7 @@ import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { Navigate } from "react-router-dom";
 
 import { getSession, login, logout } from "./lib/api";
+import { LoadingPanel } from "./ui";
 
 type AuthContextValue = {
   loading: boolean;
@@ -73,7 +74,7 @@ export function RequireAdmin(props: { children: ReactNode }) {
   const auth = useAuth();
 
   if (auth.loading) {
-    return <div className="empty-state">Checking admin session...</div>;
+    return <LoadingPanel message="Checking admin session." />;
   }
 
   if (!auth.session.authenticated) {
