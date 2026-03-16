@@ -1,0 +1,21 @@
+{
+  "name": "@donggeuri/api",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "build": "wrangler deploy --dry-run",
+    "dev": "wrangler dev --local",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@donggeuri/shared": "file:../../packages/shared",
+    "hono": "^4.7.2",
+    "zod": "^3.24.2"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20250303.0",
+    "typescript": "^5.8.2",
+    "wrangler": "^4.6.0"
+  }
+}

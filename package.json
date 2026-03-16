@@ -1,0 +1,15 @@
+{
+  "name": "donggeuri-cloudflare-blog",
+  "private": true,
+  "version": "0.1.0",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "npm run build --workspaces --if-present",
+    "dev:api": "npm run dev --workspace @donggeuri/api",
+    "dev:web": "npm run dev --workspace @donggeuri/web",
+    "typecheck": "npm run typecheck --workspaces --if-present"
+  }
+}

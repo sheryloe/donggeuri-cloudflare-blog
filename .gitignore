@@ -1,0 +1,9 @@
+node_modules/
+dist/
+.wrangler/
+.turbo/
+.env
+.dev.vars
+coverage/
+.DS_Store
+Thumbs.db
