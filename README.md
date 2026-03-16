@@ -1,87 +1,47 @@
 # Donggeuri Cloudflare Blog
 
-Cloudflare-only blog platform workspace based on the architecture docs in `docs/`.
+Cloudflare Pages, Workers, D1, R2를 사용해 공개 블로그와 관리자 CMS를 분리하는 블로그 플랫폼 실험 저장소입니다.
 
-## Architecture
+- 저장소: `https://github.com/sheryloe/donggeuri-cloudflare-blog`
 
-- Cloudflare Pages for the public site and the admin app
-- Cloudflare Workers for the JSON API
-- Cloudflare D1 for blog metadata and post content
-- Cloudflare R2 for media assets
+## 서비스 개요
 
-## Workspace Layout
+- 공개 사이트와 관리자 앱, API를 독립 배포 단위로 분리합니다.
+- Cloudflare 네이티브 스택만으로 블로그 운영 구조를 구성하는 것이 목표입니다.
+- 향후 다중 사이트 운영이나 경량 CMS로 확장하기 좋은 기반을 갖고 있습니다.
 
-- `apps/web`: Cloudflare Pages frontend for the public blog
-- `apps/admin`: Cloudflare Pages frontend for the admin workspace
-- `apps/api`: Cloudflare Worker API with D1 and R2 bindings
-- `packages/shared`: shared types used by the web app and the worker
+## 워크스페이스 구성
 
-## Quick Start
+- `apps/web`: 공개 블로그 프런트엔드
+- `apps/admin`: 관리자 앱
+- `apps/api`: D1/R2 바인딩을 사용하는 Worker API
+- `packages/shared`: 공용 타입
 
-1. Copy `.env.example` into your local environment tooling as needed.
-2. Set `PUBLIC_APP_ORIGIN`, `ADMIN_APP_ORIGIN`, `ADMIN_EMAIL`, `ADMIN_PASSWORD_HASH`, and `JWT_SECRET` for the Worker.
-3. Set `VITE_API_BASE_URL` for both frontend apps.
-4. Install dependencies with `pnpm install`.
-5. Run the API with `pnpm dev:api`.
-6. Run the public app with `pnpm dev:web`.
-7. Run the admin app with `pnpm dev:admin`.
+## 보안 전제
 
-## Security And Deployment Assumptions
+- 관리자 세션은 HTTP-only cookie 기준입니다.
+- 같은 eTLD+1 아래에서 Public/Admin/API를 분리하는 배포 모델을 권장합니다.
+- Worker CORS는 허용 목록 기반으로 동작합니다.
 
-- `apps/web`, `apps/admin`, and `apps/api` are separate deployment units.
-- Admin sessions use an HTTP-only cookie with `SameSite=Lax`.
-- The supported production model is same-site deployment under the same eTLD+1:
-  `blog.example.com`, `admin.example.com`, and `api.example.com`.
-- `pages.dev` and `workers.dev` on unrelated hostnames are not an officially supported admin session setup.
-- `VITE_API_BASE_URL` is required in practice for both frontend apps. The only implicit fallback is local development against `http://127.0.0.1:8787`.
-- Worker CORS is allowlist-based and uses `PUBLIC_APP_ORIGIN` and `ADMIN_APP_ORIGIN`.
+## 구현된 API
 
-## Worker API
+- Public posts/categories/tags 조회
+- Admin login/logout/session
+- Admin posts CRUD
+- Admin media CRUD
+- Admin categories/tags CRUD
 
-Implemented routes based on `docs/worker_api.md`:
+## 실행 방법
 
-- `GET /api/public/posts`
-- `GET /api/public/posts/:slug`
-- `GET /api/public/categories`
-- `GET /api/public/categories/:slug/posts`
-- `GET /api/public/tags/:slug/posts`
-- `POST /api/admin/login`
-- `POST /api/admin/logout`
-- `GET /api/admin/session`
-- `GET /api/admin/posts`
-- `GET /api/admin/posts/:id`
-- `POST /api/admin/posts`
-- `PUT /api/admin/posts/:id`
-- `DELETE /api/admin/posts/:id`
-- `GET /api/admin/media`
-- `POST /api/admin/media`
-- `GET /api/admin/categories`
-- `POST /api/admin/categories`
-- `PUT /api/admin/categories/:id`
-- `DELETE /api/admin/categories/:id`
-- `GET /api/admin/tags`
-- `POST /api/admin/tags`
-- `PUT /api/admin/tags/:id`
-- `DELETE /api/admin/tags/:id`
+```bash
+pnpm install
+pnpm dev:api
+pnpm dev:web
+pnpm dev:admin
+```
 
-## App Environment
+## 다음 단계
 
-- `apps/web` should set `VITE_API_BASE_URL` and can optionally set `VITE_ADMIN_APP_URL`
-- `apps/admin` should set `VITE_API_BASE_URL` and can optionally set `VITE_PUBLIC_APP_URL`
-- `apps/api` should set `PUBLIC_APP_ORIGIN`, `ADMIN_APP_ORIGIN`, `ADMIN_EMAIL`, `ADMIN_PASSWORD_HASH`, `JWT_SECRET`, and `R2_PUBLIC_BASE_URL`
-
-## Cloudflare Setup
-
-- Cloudflare Pages for `apps/web`
-  - set `VITE_API_BASE_URL`
-  - optionally set `VITE_ADMIN_APP_URL`
-- Cloudflare Pages for `apps/admin`
-  - set `VITE_API_BASE_URL`
-  - optionally set `VITE_PUBLIC_APP_URL`
-- Cloudflare Worker for `apps/api`
-  - set `PUBLIC_APP_ORIGIN`
-  - set `ADMIN_APP_ORIGIN`
-  - set `ADMIN_EMAIL`
-  - set `ADMIN_PASSWORD_HASH`
-  - set `JWT_SECRET`
-  - set `R2_PUBLIC_BASE_URL`
+- 예약 발행, 초안 상태, 미리보기 추가
+- 관리자 감사 로그와 역할 분리 강화
+- RSS/SEO/검색 기능을 공개 블로그 측에 완성
