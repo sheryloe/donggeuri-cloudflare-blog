@@ -1,0 +1,11 @@
+# Environment Variables
+
+Example .env.example
+
+NODE_ENV=development
+D1_DATABASE_ID=
+R2_BUCKET_NAME=
+R2_PUBLIC_BASE_URL=
+ADMIN_EMAIL=
+ADMIN_PASSWORD_HASH=
+JWT_SECRET=
