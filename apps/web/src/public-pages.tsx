@@ -22,7 +22,7 @@ import { ErrorMessage } from "./ui";
 const RSS_FEED_URL = getWorkerResourceUrl("/rss.xml");
 const SITEMAP_URL = getWorkerResourceUrl("/sitemap.xml");
 const SITE_TITLE = "Donggri 기록들";
-const SITE_TAGLINE = "새로 적힌 글이 먼저 놓이고, 오른쪽 기록의 갈래가 차분히 결을 더하는 기록 블로그입니다.";
+const SITE_TAGLINE = "잠시 머물며 마음은 쉬고, 필요한 지식 한 줄은 조용히 가져가는 기록 서가입니다.";
 const SITE_DESCRIPTION =
   "메인에는 새 글이 먼저 놓이고, 오른쪽에는 정보의 기록, 세상의 기록, 시장의 기록, 기술의 기록, 동그리의 기록이 트리로 정리됩니다. 문화와 축제, 역사와 이슈, 주식과 크립토, 신기술, 개발, 여행, 일상을 한 번에 파악할 수 있게 분류한 기록 블로그입니다.";
 const ABOUT_DESCRIPTION =
@@ -295,9 +295,9 @@ function Sidebar(props: { categories: Category[] }) {
     <aside className="simple-sidebar">
       <section className="sidebar-box">
         <p className="sidebar-box__eyebrow">{SITE_TITLE}</p>
-        <h2 className="sidebar-box__title">하루의 장면과 오래 남는 문장을 차분히 모아두는 곳입니다.</h2>
+        <h2 className="sidebar-box__title">쉬어 읽는 동안, 하나쯤 가져갈 만한 문장을 모아두는 곳입니다.</h2>
         <p className="sidebar-box__text">
-          빠르게 스쳐 지나가는 이야기보다 한 번 더 들여다보고 싶은 기록을 남깁니다. 새 글은 앞에 놓고, 기록의 갈래는 옆에서 조용히 흐름을 이어 붙입니다.
+          잠깐 머무는 동안에도 작은 정보와 잔잔한 여운이 함께 남도록 기록합니다. 새 글은 앞에 놓고, 기록의 갈래는 옆에서 조용히 읽을 길을 이어 둡니다.
         </p>
       </section>
 
@@ -440,8 +440,8 @@ export function HomePage() {
 
       <ArchiveHeader
         eyebrow="블로그"
-        title="새로 적힌 글이 먼저 놓이고, 기록의 갈래는 옆에서 조용히 결을 더합니다"
-        description="메인에는 막 올라온 글과 오래 남을 문장이 먼저 자리하고, 오른쪽 갈래는 읽는 흐름을 해치지 않게 천천히 방향을 붙잡아 둡니다."
+        title="쉬어 읽는 사이, 작은 지식과 오래 남는 문장이 차분히 놓이는 곳"
+        description="메인에는 막 도착한 글을 먼저 두고, 오른쪽 갈래는 서가처럼 천천히 길을 잡아둡니다. 가볍게 머물러도 하나쯤 얻어갈 수 있는 기록 블로그를 지향합니다."
       />
 
       {featured ? (
