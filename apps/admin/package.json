@@ -1,5 +1,5 @@
 {
-  "name": "@donggeuri/admin",
+  "name": "@cloudflare-blog/admin",
   "private": true,
   "version": "0.1.0",
   "type": "module",
@@ -9,7 +9,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@donggeuri/shared": "workspace:*",
+    "@cloudflare-blog/shared": "workspace:*",
     "@radix-ui/react-dialog": "^1.1.15",
     "@radix-ui/react-slot": "^1.2.4",
     "@tailwindcss/vite": "^4.2.1",

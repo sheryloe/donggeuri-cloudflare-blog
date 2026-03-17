@@ -6,9 +6,9 @@ Cloudflare Worker API for public content delivery and admin operations.
 
 - Copy `apps/api/.dev.vars.example` to `apps/api/.dev.vars`, or run `pwsh ./scripts/setup-local-dev.ps1` from the repo root.
 - Apply the local schema once before `wrangler dev --local`:
-  `pnpm --filter @donggeuri/api exec wrangler d1 migrations apply donggeuri-blog --local`
-- `pnpm --filter @donggeuri/api dev`
-- `pnpm --filter @donggeuri/api build`
+  `pnpm --filter @cloudflare-blog/api exec wrangler d1 migrations apply cloudflare-blog --local`
+- `pnpm --filter @cloudflare-blog/api dev`
+- `pnpm --filter @cloudflare-blog/api build`
 
 ## Required Variables
 

@@ -1,4 +1,4 @@
-import type { LoginInput } from "@donggeuri/shared";
+import type { LoginInput } from "@cloudflare-blog/shared";
 import { LayoutDashboard, Library, LogOut, PanelsTopLeft, Tags, Upload } from "lucide-react";
 import type { FormEvent } from "react";
 import { useMemo, useState } from "react";
@@ -56,7 +56,7 @@ export function AdminLayout() {
           <div className="admin-panel overflow-hidden p-5">
             <div className="space-y-4">
               <div className="inline-flex w-fit items-center rounded-full border border-black/8 bg-white/70 px-3 py-1.5 shadow-sm">
-                <p className="section-kicker !tracking-[0.28em]">Donggeuri Admin</p>
+                <p className="section-kicker !tracking-[0.28em]">Blog Admin</p>
               </div>
               <div className="space-y-2">
                 <h1 className="text-3xl font-semibold tracking-tight text-[var(--color-ink)]">글 관리</h1>
@@ -196,7 +196,7 @@ export function LoginPage() {
         <section className="admin-panel hidden overflow-hidden p-8 lg:flex lg:flex-col lg:justify-between">
           <div className="space-y-5">
             <div className="inline-flex w-fit items-center rounded-full border border-black/8 bg-white/70 px-3 py-1.5 shadow-sm">
-              <p className="section-kicker !tracking-[0.28em]">Donggeuri Admin</p>
+              <p className="section-kicker !tracking-[0.28em]">Blog Admin</p>
             </div>
             <div className="space-y-3">
               <h1 className="text-5xl font-semibold tracking-tight text-[var(--color-ink)]">차분한 글쓰기 작업실.</h1>

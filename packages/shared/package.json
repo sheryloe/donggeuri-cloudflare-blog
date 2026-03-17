@@ -1,5 +1,5 @@
 {
-  "name": "@donggeuri/shared",
+  "name": "@cloudflare-blog/shared",
   "private": true,
   "version": "0.1.0",
   "type": "module",

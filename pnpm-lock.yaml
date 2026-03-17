@@ -10,7 +10,7 @@ importers:
 
   apps/admin:
     dependencies:
-      '@donggeuri/shared':
+      '@cloudflare-blog/shared':
         specifier: workspace:*
         version: link:../../packages/shared
       '@radix-ui/react-dialog':
@@ -68,7 +68,7 @@ importers:
 
   apps/api:
     dependencies:
-      '@donggeuri/shared':
+      '@cloudflare-blog/shared':
         specifier: workspace:*
         version: link:../../packages/shared
       hono:
@@ -90,7 +90,7 @@ importers:
 
   apps/web:
     dependencies:
-      '@donggeuri/shared':
+      '@cloudflare-blog/shared':
         specifier: workspace:*
         version: link:../../packages/shared
       '@fontsource-variable/newsreader':

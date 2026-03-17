@@ -21,8 +21,14 @@ Use the matching `*.example` files or run `pwsh ./scripts/setup-local-dev.ps1`.
 
 - `VITE_API_BASE_URL`
 - `VITE_ADMIN_APP_URL`
+- `VITE_GA_MEASUREMENT_ID` (optional)
 
 ## Admin App (`apps/admin/.env`)
 
 - `VITE_API_BASE_URL`
 - `VITE_PUBLIC_APP_URL`
+
+## Template Note
+
+- Search Console / Naver verification meta and custom domains are intentionally not baked into the public template.
+- Put those values in your private deployment repo or deployment-specific build configuration.

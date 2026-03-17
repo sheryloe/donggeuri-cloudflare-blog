@@ -1,4 +1,4 @@
-import type { Category, Tag, TaxonomyInput } from "@donggeuri/shared";
+import type { Category, Tag, TaxonomyInput } from "@cloudflare-blog/shared";
 
 import { slugify } from "./posts";
 

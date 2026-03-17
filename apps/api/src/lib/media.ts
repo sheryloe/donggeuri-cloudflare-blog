@@ -1,4 +1,4 @@
-import type { MediaAsset } from "@donggeuri/shared";
+import type { MediaAsset } from "@cloudflare-blog/shared";
 
 import { slugify } from "./posts";
 

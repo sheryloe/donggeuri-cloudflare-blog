@@ -1,4 +1,4 @@
-import type { ApiFailure, ApiSuccess } from "@donggeuri/shared";
+import type { ApiFailure, ApiSuccess } from "@cloudflare-blog/shared";
 import type { Context, Next } from "hono";
 import { z } from "zod";
 

@@ -5,15 +5,15 @@ declare global {
   interface Window {
     dataLayer?: unknown[];
     gtag?: (...args: unknown[]) => void;
-    __donggeuriAnalyticsLoaded?: boolean;
-    __donggeuriAnalyticsConfigured?: boolean;
+    __cloudflareBlogAnalyticsLoaded?: boolean;
+    __cloudflareBlogAnalyticsConfigured?: boolean;
   }
 }
 
 const GOOGLE_TAG_SRC = "https://www.googletagmanager.com/gtag/js?id=";
 
 function loadGoogleTag(measurementId: string) {
-  if (typeof document === "undefined" || window.__donggeuriAnalyticsLoaded) {
+  if (typeof document === "undefined" || window.__cloudflareBlogAnalyticsLoaded) {
     return;
   }
 
@@ -21,7 +21,7 @@ function loadGoogleTag(measurementId: string) {
   script.async = true;
   script.src = `${GOOGLE_TAG_SRC}${measurementId}`;
   document.head.appendChild(script);
-  window.__donggeuriAnalyticsLoaded = true;
+  window.__cloudflareBlogAnalyticsLoaded = true;
 }
 
 function ensureAnalyticsRuntime() {
@@ -45,12 +45,12 @@ export function AnalyticsTracker() {
     ensureAnalyticsRuntime();
     loadGoogleTag(measurementId);
 
-    if (!window.__donggeuriAnalyticsConfigured) {
+    if (!window.__cloudflareBlogAnalyticsConfigured) {
       window.gtag?.("js", new Date());
       window.gtag?.("config", measurementId, {
         send_page_view: false,
       });
-      window.__donggeuriAnalyticsConfigured = true;
+      window.__cloudflareBlogAnalyticsConfigured = true;
     }
   }, [measurementId]);
 

@@ -6,7 +6,7 @@ import type {
   PostSummary,
   SearchPostsResult,
   TagFeed,
-} from "@donggeuri/shared";
+} from "@cloudflare-blog/shared";
 
 function resolveApiBaseUrl() {
   const configured = import.meta.env.VITE_API_BASE_URL?.trim();

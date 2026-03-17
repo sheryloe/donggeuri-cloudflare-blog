@@ -1,4 +1,4 @@
-import type { Category, PostSummary } from "@donggeuri/shared";
+import type { Category, PostSummary } from "@cloudflare-blog/shared";
 
 function escapeXml(value: string) {
   return value

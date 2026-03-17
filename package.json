@@ -1,13 +1,13 @@
 {
-  "name": "donggeuri-cloudflare-blog",
+  "name": "cloudflare-blog-template",
   "private": true,
   "version": "0.1.0",
   "packageManager": "pnpm@10.8.1",
   "scripts": {
     "build": "corepack pnpm -r --if-present run build",
-    "dev:admin": "corepack pnpm --filter @donggeuri/admin dev",
-    "dev:api": "corepack pnpm --filter @donggeuri/api dev",
-    "dev:web": "corepack pnpm --filter @donggeuri/web dev",
+    "dev:admin": "corepack pnpm --filter @cloudflare-blog/admin dev",
+    "dev:api": "corepack pnpm --filter @cloudflare-blog/api dev",
+    "dev:web": "corepack pnpm --filter @cloudflare-blog/web dev",
     "typecheck": "corepack pnpm -r --if-present run typecheck"
   }
 }

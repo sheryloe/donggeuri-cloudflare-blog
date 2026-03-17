@@ -32,7 +32,7 @@ export function ShellCard(props: {
       <CardHeader className="gap-4 border-b border-[var(--color-line)] bg-white/30">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
           <div className="space-y-2">
-            <span className="eyebrow">Donggeuri</span>
+            <span className="eyebrow">Template</span>
             <CardTitle className="text-2xl sm:text-[2rem]">{props.title}</CardTitle>
             {props.description ? <CardDescription>{props.description}</CardDescription> : null}
           </div>

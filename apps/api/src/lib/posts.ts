@@ -7,7 +7,7 @@ import type {
   Tag,
   TagFeed,
   UpdatePostInput,
-} from "@donggeuri/shared";
+} from "@cloudflare-blog/shared";
 
 export function slugify(value: string) {
   return value

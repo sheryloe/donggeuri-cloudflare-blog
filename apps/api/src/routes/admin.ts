@@ -1,7 +1,7 @@
 import { Hono } from "hono";
 import { z } from "zod";
 
-import type { LoginInput, TaxonomyInput } from "@donggeuri/shared";
+import type { LoginInput, TaxonomyInput } from "@cloudflare-blog/shared";
 
 import { clearAdminSession, createAdminSession, getAdminSession, verifyAdminCredentials } from "../lib/auth";
 import { fail, ok, parseJson, requireAdmin } from "../lib/http";

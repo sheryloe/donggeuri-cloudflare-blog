@@ -10,9 +10,9 @@ import type {
   Tag,
   TaxonomyInput,
   UpdatePostInput,
-} from "@donggeuri/shared";
+} from "@cloudflare-blog/shared";
 
-const ADMIN_TOKEN_STORAGE_KEY = "donggeuri_admin_token";
+const ADMIN_TOKEN_STORAGE_KEY = "cloudflare_blog_admin_token";
 
 type LoginResult = {
   session: AdminSession;

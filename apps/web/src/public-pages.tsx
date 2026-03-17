@@ -1,4 +1,4 @@
-import type { Category, CategoryFeed, Post, PostSummary, TagFeed } from "@donggeuri/shared";
+import type { Category, CategoryFeed, Post, PostSummary, TagFeed } from "@cloudflare-blog/shared";
 import { ArrowUpRight, MoveRight } from "lucide-react";
 import type { FormEvent } from "react";
 import { useEffect, useMemo, useState } from "react";
@@ -31,13 +31,13 @@ import { ErrorMessage } from "./ui";
 
 const RSS_FEED_URL = "/rss.xml";
 const SITEMAP_URL = "/sitemap.xml";
-const SITE_TITLE = "Donggri 기록들";
-const SITE_ALT_NAME = "Donggri Blog";
-const SITE_AUTHOR = "동그리";
-const SITE_TAGLINE = "잠시 머물며 마음은 쉬고, 필요한 지식 한 줄은 조용히 가져가는 기록 서가입니다.";
-const SITE_DESCRIPTION = "문화와 축제, 역사와 이슈, 주식과 크립토, 신기술, 개발, 여행과 일상을 차분하게 기록하는 블로그입니다.";
+const SITE_TITLE = "Cloudflare Blog";
+const SITE_ALT_NAME = "Cloudflare Blog Template";
+const SITE_AUTHOR = "Blog Author";
+const SITE_TAGLINE = "차분한 글, 가벼운 메모, 오래 남길 자료를 함께 쌓는 공개 블로그 템플릿입니다.";
+const SITE_DESCRIPTION = "Cloudflare Pages, Workers, D1, R2를 바탕으로 만든 재사용 가능한 공개 블로그 템플릿입니다.";
 const ABOUT_DESCRIPTION =
-  "Donggri 기록들은 문화와 축제, 역사와 이슈, 주식과 크립토, 신기술, 개발, 여행과 일상을 한곳에 차분히 모아두는 공개 블로그입니다.";
+  "Cloudflare Blog는 공개 웹, 관리자 앱, API를 분리해 운영할 수 있게 만든 재사용용 블로그 템플릿입니다.";
 const DEFAULT_OG_IMAGE_PATH = "/og-default.svg";
 
 const publicLinks = [
@@ -54,39 +54,39 @@ const pageDateFormatter = new Intl.DateTimeFormat("ko-KR", {
 
 const ARCHIVE_GROUPS = [
   {
-    eyebrow: "정보의 기록",
-    title: "문화, 축제, 행사를 보기 좋게 정리합니다.",
+    eyebrow: "Articles",
+    title: "긴 글과 메인 아티클을 정리합니다.",
     description:
-      "문화 공간, 계절 축제, 각종 행사를 다시 찾기 쉽게 정리하는 갈래입니다. 장소 분위기와 일정, 포인트를 한눈에 훑을 수 있게 남깁니다.",
-    items: ["문화와 공간", "축제와 시즌", "행사와 현장"],
+      "대표 글, 에세이, 깊이 있는 해설처럼 홈에서 먼저 보여주고 싶은 긴 글을 모아두는 갈래입니다.",
+    items: ["대표 글", "긴 글", "에세이"],
   },
   {
-    eyebrow: "세상의 기록",
-    title: "역사, 이슈, 미스터리를 맥락 있게 정리합니다.",
+    eyebrow: "Guides",
+    title: "가이드와 how-to를 단계별로 정리합니다.",
     description:
-      "역사와 문화, 오늘의 이슈, 미스터리와 전설을 배경과 해설까지 붙여 정리하는 갈래입니다. 흥미만 남기지 않고 맥락까지 같이 남깁니다.",
-    items: ["역사와 문화", "이슈와 해설", "미스터리와 전설"],
+      "사용법, 설정법, 작업 절차처럼 다시 참고하기 쉬운 형태의 글을 모아두는 갈래입니다.",
+    items: ["시작 가이드", "설정 방법", "운영 문서"],
   },
   {
-    eyebrow: "시장의 기록",
-    title: "주식과 크립토를 흐름 중심으로 읽습니다.",
+    eyebrow: "Reviews",
+    title: "도구와 콘텐츠 리뷰를 차분히 남깁니다.",
     description:
-      "짧은 등락보다 주식과 크립토의 흐름, 배경, 리스크를 기록하는 갈래입니다. 나중에 다시 꺼내 볼 기준점을 남기는 쪽에 가깝습니다.",
-    items: ["주식의 흐름", "크립토의 흐름"],
+      "제품, 서비스, 책, 영상, 툴처럼 경험을 남기고 비교하기 좋은 주제를 모아두는 갈래입니다.",
+    items: ["도구 리뷰", "콘텐츠 리뷰", "비교 기록"],
   },
   {
-    eyebrow: "기술의 기록",
-    title: "신기술, 리뷰, 분석 글을 다시 보기 좋게 남깁니다.",
+    eyebrow: "Notes",
+    title: "짧은 메모와 관찰 기록을 이어 둡니다.",
     description:
-      "새 기술 소식, 전문 유튜브 리뷰, 좋은 글 분석을 핵심과 해설 중심으로 정리합니다. 실무 감각으로 다시 참고하기 좋은 메모를 지향합니다.",
-    items: ["신기술과 도구", "유튜브 리뷰", "글 분석과 해설"],
+      "짧은 생각, 작업 로그, 발췌 메모처럼 빠르게 쌓이고 자주 돌아보기 좋은 내용을 정리하는 갈래입니다.",
+    items: ["짧은 메모", "작업 로그", "아이디어 스냅샷"],
   },
   {
-    eyebrow: "동그리의 기록",
-    title: "개발, 여행, 일상을 동그리의 방식으로 기록합니다.",
+    eyebrow: "Resources",
+    title: "링크와 자료를 다시 찾기 좋게 모읍니다.",
     description:
-      "개발하는 일과 프로그래밍, 여행에서 본 장면, 일상에서 남긴 메모를 동그리의 시선으로 적어두는 갈래입니다. 가볍게 흘려보내기보다 차분히 남깁니다.",
-    items: ["개발과 프로그래밍", "여행과 기록", "일상과 메모"],
+      "레퍼런스, 링크 모음, 아카이브형 문서를 한눈에 정리해두는 갈래입니다.",
+    items: ["참고 링크", "모음집", "아카이브"],
   },
 ] as const;
 
@@ -280,9 +280,9 @@ function Sidebar(props: { categories: Category[] }) {
     <aside className="simple-sidebar">
       <section className="sidebar-box">
         <p className="sidebar-box__eyebrow">{SITE_TITLE}</p>
-        <h2 className="sidebar-box__title">쉬어 읽는 동안, 하나쯤 가져갈 만한 문장을 모아두는 곳입니다.</h2>
+        <h2 className="sidebar-box__title">가볍게 읽는 글부터 오래 참고할 자료까지 차분히 쌓아가는 기본 블로그입니다.</h2>
         <p className="sidebar-box__text">
-          잠깐 머무는 동안에도 작은 정보와 잔잔한 여운이 함께 남도록 기록합니다. 새 글은 앞에 놓고, 기록의 갈래는 옆에서 조용히 읽을 길을 이어 둡니다.
+          이 영역은 private repo에서 자기 소개나 운영 원칙으로 바꿔 쓰면 좋습니다. 템플릿에서는 메인 글, 카테고리, 피드 동선이 어떻게 보이는지에 집중합니다.
         </p>
       </section>
 
@@ -461,8 +461,8 @@ export function HomePage() {
 
       <ArchiveHeader
         eyebrow="블로그"
-        title="쉬어 읽는 사이, 작은 지식과 오래 남는 문장이 차분히 놓이는 곳"
-        description="메인에는 막 도착한 글을 먼저 두고, 오른쪽 갈래는 서가처럼 천천히 길을 잡아둡니다. 가볍게 머물러도 하나쯤 얻어갈 수 있는 기록 블로그를 지향합니다."
+        title="읽기 흐름과 콘텐츠 구조를 바로 확인할 수 있는 기본 공개 블로그"
+        description="최신 글, 카테고리, 검색, RSS와 sitemap까지 기본 동선을 갖춘 템플릿입니다. 실제 운영 카피와 주제는 private repo에서 교체하면 됩니다."
       />
 
       {featured ? (
@@ -770,9 +770,7 @@ export function TagArchivePage() {
   const [error, setError] = useState<string | null>(null);
   const tagPath = `/tag/${slug}`;
   const tagTitle = feed ? `#${feed.tag.name} | ${SITE_TITLE}` : `태그 | ${SITE_TITLE}`;
-  const tagDescription = feed
-    ? `#${feed.tag.name}로 묶인 공개 글 목록입니다.`
-    : "선택한 태그에 연결된 공개 글을 모아보는 페이지입니다.";
+  const tagDescription = feed ? `#${feed.tag.name}로 묶인 공개 글 목록입니다.` : "선택한 태그에 연결된 공개 글을 모아보는 페이지입니다.";
 
   usePageMetadata({
     title: tagTitle,
@@ -834,13 +832,13 @@ export function SearchPage() {
 
   usePageMetadata({
     title: currentQuery ? `"${currentQuery}" 검색 | ${SITE_TITLE}` : `검색 | ${SITE_TITLE}`,
-    description: "행사, 문화, 이슈, 미스터리, 주식, 크립토, AI 같은 키워드로 공개 글의 제목, 요약, 본문, 태그를 검색할 수 있습니다.",
+    description: "주제어 하나로 공개 글의 제목, 요약, 본문, 태그를 다시 찾을 수 있는 검색 페이지입니다.",
     path: "/search",
     robots: "noindex,follow",
     image: DEFAULT_OG_IMAGE_PATH,
     structuredData: createWebPageStructuredData({
       name: currentQuery ? `"${currentQuery}" 검색 | ${SITE_TITLE}` : `검색 | ${SITE_TITLE}`,
-      description: "행사, 문화, 이슈, 미스터리, 주식, 크립토, AI 같은 키워드로 공개 글의 제목, 요약, 본문, 태그를 검색할 수 있습니다.",
+      description: "주제어 하나로 공개 글의 제목, 요약, 본문, 태그를 다시 찾을 수 있는 검색 페이지입니다.",
       path: "/search",
       breadcrumbs: [
         { name: SITE_TITLE, path: "/" },
@@ -889,15 +887,15 @@ export function SearchPage() {
     <div className="simple-page">
       <ArchiveHeader
         eyebrow="검색"
-        title="떠오른 단어 하나로 관련 기록을 다시 찾기"
-        description="공개된 글의 제목, 요약, 본문, 태그를 기준으로 검색합니다. 행사, 미스터리, 비트코인, AI처럼 주제어 하나만 넣어도 관련 글을 다시 모아볼 수 있습니다."
+        title="떠오른 단어 하나로 관련 글을 다시 찾기"
+        description="공개된 글의 제목, 요약, 본문, 태그를 기준으로 검색합니다. private repo에서는 여기를 실제 콘텐츠 톤에 맞게 바꾸면 됩니다."
       />
 
       <form className="search-panel" onSubmit={handleSubmit}>
         <Input
           value={draft}
           onChange={(event) => setDraft(event.target.value)}
-          placeholder="예: 축제, 역사, 비트코인, 개발"
+          placeholder="예: 가이드, 리뷰, 메모, 튜토리얼"
           aria-label="검색어"
         />
         <Button type="submit" className="simple-primary-button search-panel__button">
@@ -955,21 +953,20 @@ export function AboutPage() {
     <div className="simple-page">
       <ArchiveHeader
         eyebrow="소개"
-        title="문화와 축제, 역사와 이슈, 시장과 기술, 그리고 동그리의 일상을 한곳에 모아둡니다"
-        description="Donggri 기록들은 문화, 축제, 행사, 역사, 다큐, 미스터리, 주식, 크립토, 신기술, 개발, 여행, 일상을 차분한 문장으로 엮는 공개 블로그입니다. 가볍게 훑어도 주제가 보이고, 오래 읽으면 맥락이 남는 기록을 지향합니다."
+        title="공개 웹, 관리자 앱, API를 나눠 운영하는 Cloudflare 블로그 템플릿"
+        description="이 템플릿은 글 발행, 분류 관리, 미디어 업로드, RSS, sitemap, SEO shell 같은 기본 블로그 흐름을 Cloudflare 중심으로 구성해 둔 출발점입니다."
       />
 
       <section className="featured-post">
         <div className="featured-post__body">
           <div className="post-row__meta">
-            <span className="simple-chip">문화와 축제</span>
-            <span className="simple-chip">역사와 이슈</span>
-            <span className="simple-chip">개발과 여행</span>
+            <span className="simple-chip">Public Web</span>
+            <span className="simple-chip">Admin CMS</span>
+            <span className="simple-chip">Worker API</span>
           </div>
-          <h2 className="featured-post__title">눈길이 머무는 장면부터 오래 붙드는 이야기까지, Donggri 기록들에 차분히 모아둡니다.</h2>
+          <h2 className="featured-post__title">실제 블로그를 만들기 전에, 읽는 흐름과 운영 구조부터 안정적으로 갖춰 둡니다.</h2>
           <p className="featured-post__summary">
-            이곳에는 문화와 축제, 행사와 공간, 역사와 다큐, 이슈와 미스터리, 주식과 크립토, 신기술과 개발, 여행과 일상이 함께 쌓입니다.
-            검색으로 다시 찾기 좋고, 처음 들어와도 어떤 주제를 다루는지 바로 보이도록 정리했습니다.
+            이곳에는 실제 콘텐츠 대신 기본 구조가 들어 있습니다. private repo에서는 소개 문구, 대표 카테고리, 운영 톤을 서비스에 맞게 바꾸면 됩니다.
           </p>
         </div>
 
@@ -978,14 +975,14 @@ export function AboutPage() {
             <p className="sidebar-box__eyebrow">기록</p>
             <h3 className="sidebar-box__title">자주 머무는 이야기</h3>
             <p className="sidebar-box__text">
-              문화, 축제, 행사, 역사, 다큐, 미스터리, 주식, 크립토, 신기술, 개발, 여행, 일상처럼 하루의 관심사와 오래 남는 주제를 함께 다룹니다.
+              이 섹션은 private repo에서 주력 카테고리, 브랜드 소개, 운영 원칙처럼 서비스에 맞는 내용으로 교체하면 됩니다.
             </p>
           </section>
           <section className="sidebar-box">
             <p className="sidebar-box__eyebrow">문장</p>
             <h3 className="sidebar-box__title">빠르게 읽혀도, 오래 남게</h3>
             <p className="sidebar-box__text">
-              짧게 훑어도 핵심이 잡히고, 길게 읽어도 흐름이 끊기지 않는 글을 지향합니다. 정보성 글과 기록성 글이 한 화면 안에서 자연스럽게 이어집니다.
+              짧게 훑어도 구조가 보이고, 길게 읽어도 흐름이 끊기지 않는 기본 레이아웃을 지향합니다. 정보성 글과 기록성 글이 모두 올라와도 무리 없이 읽히는 톤을 목표로 합니다.
             </p>
           </section>
         </div>
@@ -994,7 +991,7 @@ export function AboutPage() {
       <section className="list-section">
         <div className="list-section__header">
           <h2>이 블로그에서 만나는 갈래</h2>
-          <p>처음 들어와도 어떤 글을 읽게 될지 한눈에 보이도록, 큰 주제와 세부 주제를 차분하게 정리해두었습니다.</p>
+          <p>처음 들어와도 어떤 구조의 블로그인지 한눈에 보이도록, 대표 카테고리 예시를 차분하게 정리해두었습니다.</p>
         </div>
         <div className="topic-grid">
           {ARCHIVE_GROUPS.map((group) => (

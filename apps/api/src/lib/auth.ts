@@ -1,10 +1,10 @@
-import type { AdminSession, LoginInput } from "@donggeuri/shared";
+import type { AdminSession, LoginInput } from "@cloudflare-blog/shared";
 import { deleteCookie, getCookie, setCookie } from "hono/cookie";
 import type { Context } from "hono";
 
 import type { AppEnv, WorkerBindings } from "../types";
 
-const SESSION_COOKIE_NAME = "donggeuri_admin_session";
+const SESSION_COOKIE_NAME = "cloudflare_blog_admin_session";
 const SESSION_MAX_AGE_SECONDS = 60 * 60 * 12;
 
 export class ConfigurationError extends Error {

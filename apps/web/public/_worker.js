@@ -1,14 +1,14 @@
-const SITE_TITLE = "Donggri 기록들";
-const SITE_ALT_NAME = "Donggri Blog";
-const SITE_AUTHOR = "동그리";
+const SITE_TITLE = "Cloudflare Blog";
+const SITE_ALT_NAME = "Cloudflare Blog Template";
+const SITE_AUTHOR = "Blog Author";
 const SITE_DESCRIPTION =
-  "문화와 축제, 역사와 이슈, 주식과 크립토, 신기술, 개발, 여행과 일상을 차분하게 기록하는 블로그입니다.";
+  "Cloudflare Pages, Workers, D1, R2를 바탕으로 만든 재사용 가능한 공개 블로그 템플릿입니다.";
 const ABOUT_DESCRIPTION =
-  "Donggri 기록들은 문화와 축제, 역사와 이슈, 주식과 크립토, 신기술, 개발, 여행과 일상을 한곳에 차분히 모아두는 공개 블로그입니다.";
+  "Cloudflare Blog는 공개 웹, 관리자 앱, API를 분리해 운영할 수 있게 만든 재사용용 블로그 템플릿입니다.";
 const SEARCH_DESCRIPTION =
-  "행사, 문화, 이슈, 미스터리, 주식, 크립토, AI 같은 키워드로 공개 글을 다시 찾을 수 있습니다.";
+  "주제어 하나로 공개 글을 다시 찾을 수 있는 검색 페이지입니다.";
 const DEFAULT_OG_IMAGE_PATH = "/og-default.svg";
-const API_FALLBACK_ORIGIN = "https://donggeuri-api.wlflqna.workers.dev";
+const API_FALLBACK_ORIGIN = "https://api.example.com";
 
 function trimTrailingSlash(value) {
   return value.replace(/\/$/, "");
@@ -443,6 +443,18 @@ function shouldServeStaticAsset(pathname) {
   );
 }
 
+function renderRobotsTxt(request) {
+  const url = new URL(request.url);
+  const body = `User-agent: *\nAllow: /\n\nSitemap: ${toAbsoluteUrl(url.origin, "/sitemap.xml")}\n`;
+
+  return new Response(body, {
+    headers: {
+      "Content-Type": "text/plain; charset=UTF-8",
+      "Cache-Control": "public, max-age=900",
+    },
+  });
+}
+
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
@@ -454,7 +466,11 @@ export default {
       return fetch(proxiedRequest);
     }
 
-    if (shouldServeStaticAsset(pathname) || pathname === "/robots.txt") {
+    if (pathname === "/robots.txt") {
+      return renderRobotsTxt(request);
+    }
+
+    if (shouldServeStaticAsset(pathname)) {
       return env.ASSETS.fetch(request);
     }
 

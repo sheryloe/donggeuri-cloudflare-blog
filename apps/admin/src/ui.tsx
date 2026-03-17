@@ -33,7 +33,7 @@ export function ShellCard(props: {
         <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
           <div className="space-y-2">
             <div className="inline-flex w-fit items-center rounded-full border border-black/8 bg-white/70 px-3 py-1.5 shadow-sm">
-              <p className="section-kicker !tracking-[0.28em]">Donggeuri Ops</p>
+              <p className="section-kicker !tracking-[0.28em]">Editorial Ops</p>
             </div>
             <CardTitle className="text-2xl sm:text-[2rem]">{props.title}</CardTitle>
             {props.description ? <CardDescription>{props.description}</CardDescription> : null}

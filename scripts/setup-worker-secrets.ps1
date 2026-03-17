@@ -53,13 +53,13 @@ $repoRoot = Resolve-Path (Join-Path $PSScriptRoot "..")
 Push-Location $repoRoot
 
 try {
-  $AdminEmail | corepack pnpm --filter @donggeuri/api exec wrangler secret put ADMIN_EMAIL
-  $passwordHash | corepack pnpm --filter @donggeuri/api exec wrangler secret put ADMIN_PASSWORD_HASH
-  $jwtSecret | corepack pnpm --filter @donggeuri/api exec wrangler secret put JWT_SECRET
+  $AdminEmail | corepack pnpm --filter @cloudflare-blog/api exec wrangler secret put ADMIN_EMAIL
+  $passwordHash | corepack pnpm --filter @cloudflare-blog/api exec wrangler secret put ADMIN_PASSWORD_HASH
+  $jwtSecret | corepack pnpm --filter @cloudflare-blog/api exec wrangler secret put JWT_SECRET
 } finally {
   Pop-Location
 }
 
 Write-Host ""
 Write-Host "Worker secrets updated."
-Write-Host "Next step: corepack pnpm --filter @donggeuri/api exec wrangler deploy"
+Write-Host "Next step: corepack pnpm --filter @cloudflare-blog/api exec wrangler deploy"

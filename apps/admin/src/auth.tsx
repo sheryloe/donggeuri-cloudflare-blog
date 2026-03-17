@@ -1,4 +1,4 @@
-import type { AdminSession, LoginInput } from "@donggeuri/shared";
+import type { AdminSession, LoginInput } from "@cloudflare-blog/shared";
 import type { ReactNode } from "react";
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { Navigate } from "react-router-dom";

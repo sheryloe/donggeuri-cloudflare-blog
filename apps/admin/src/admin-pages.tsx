@@ -6,7 +6,7 @@ import type {
   PostStatus,
   PostSummary,
   Tag,
-} from "@donggeuri/shared";
+} from "@cloudflare-blog/shared";
 import { ImagePlus, PenSquare, Plus, Trash2 } from "lucide-react";
 import type { FormEvent } from "react";
 import { useEffect, useState } from "react";

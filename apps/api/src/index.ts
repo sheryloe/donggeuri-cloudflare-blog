@@ -116,9 +116,9 @@ app.get("/rss.xml", async (c) => {
   const posts = await listPublishedPosts(c.env.DB);
   const xml = renderRssXml({
     siteUrl: c.env.PUBLIC_APP_ORIGIN,
-    title: "Donggri 기록들",
+    title: "Cloudflare Blog",
     description:
-      "메인에는 새 글이 먼저 놓이고, 오른쪽에는 정보의 기록, 세상의 기록, 시장의 기록, 기술의 기록, 동그리의 기록이 트리로 정리되는 Donggri 기록들의 최신 글 피드입니다. 문화와 축제, 역사와 이슈, 주식과 크립토, 신기술, 개발, 여행, 일상을 한 번에 파악할 수 있게 분류한 기록을 담습니다.",
+      "Cloudflare Pages, Workers, D1, R2를 바탕으로 만든 재사용 가능한 공개 블로그 템플릿의 최신 글 피드입니다.",
     posts,
   });
 

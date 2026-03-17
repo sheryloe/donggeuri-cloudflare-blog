@@ -1,8 +1,8 @@
 import { useEffect } from "react";
 
-const DEFAULT_SITE_ORIGIN = "https://donggeuri-blog.pages.dev";
+const DEFAULT_SITE_ORIGIN = "https://blog.example.com";
 const DEFAULT_IMAGE_PATH = "/og-default.svg";
-const DEFAULT_SITE_NAME = "Donggri 기록들";
+const DEFAULT_SITE_NAME = "Cloudflare Blog";
 
 type StructuredDataNode = Record<string, unknown>;
 
