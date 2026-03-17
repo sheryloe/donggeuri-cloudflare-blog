@@ -167,23 +167,23 @@ function listPostAssignableCategories(categories: Category[]) {
 const SUGGESTED_ARCHIVE_TREE = [
   {
     parent: "정보의 기록",
-    children: ["머물고 싶은 장면", "계절이 들썩이는 날", "사람 모이는 현장"],
+    children: ["문화와 공간", "축제와 시즌", "행사와 현장"],
   },
   {
     parent: "세상의 기록",
-    children: ["시간 너머의 풍경", "오늘의 파장", "설명되지 않은 이야기"],
+    children: ["역사와 문화", "이슈와 해설", "미스터리와 전설"],
   },
   {
     parent: "시장의 기록",
-    children: ["숫자 뒤의 흐름", "변동성의 한가운데"],
+    children: ["주식의 흐름", "크립토의 흐름"],
   },
   {
     parent: "기술의 기록",
-    children: ["막 나온 기술의 기척", "화면 너머의 리뷰", "문장과 관점의 해부"],
+    children: ["신기술과 도구", "유튜브 리뷰", "글 분석과 해설"],
   },
   {
     parent: "동그리의 기록",
-    children: ["오래 남는 생각", "천천한 하루", "낯선 길의 기록"],
+    children: ["개발과 프로그래밍", "여행과 기록", "일상과 메모"],
   },
 ] as const;
 

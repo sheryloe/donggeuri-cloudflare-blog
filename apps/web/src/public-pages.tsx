@@ -22,9 +22,9 @@ import { ErrorMessage } from "./ui";
 const RSS_FEED_URL = getWorkerResourceUrl("/rss.xml");
 const SITEMAP_URL = getWorkerResourceUrl("/sitemap.xml");
 const SITE_TITLE = "Donggri 기록들";
-const SITE_TAGLINE = "메인은 새 글이 이끌고, 오른쪽 기록의 갈래가 조용히 길을 잡아주는 차분한 기록 블로그입니다.";
+const SITE_TAGLINE = "메인은 새 글이 먼저 보이고, 오른쪽 기록의 갈래가 주제를 한눈에 잡아주는 차분한 기록 블로그입니다.";
 const SITE_DESCRIPTION =
-  "메인에는 새 글이 먼저 놓이고, 오른쪽에는 정보의 기록, 세상의 기록, 시장의 기록, 기술의 기록, 동그리의 기록이 갈래처럼 뻗는 차분한 기록 블로그입니다. 문화와 이슈, 시장과 기술, 생각과 여행을 장면과 맥락의 이름으로 묶어 오래 읽히게 정리합니다.";
+  "메인에는 새 글이 먼저 놓이고, 오른쪽에는 정보의 기록, 세상의 기록, 시장의 기록, 기술의 기록, 동그리의 기록이 트리로 정리됩니다. 문화와 축제, 역사와 이슈, 주식과 크립토, 신기술, 개발, 여행, 일상을 한 번에 파악할 수 있게 분류한 기록 블로그입니다.";
 
 const publicLinks = [
   { href: "/", label: "홈", external: false },
@@ -41,38 +41,38 @@ const pageDateFormatter = new Intl.DateTimeFormat("ko-KR", {
 const ARCHIVE_GROUPS = [
   {
     eyebrow: "정보의 기록",
-    title: "머물고 싶은 장면과 계절의 현장을 모읍니다.",
+    title: "문화, 축제, 행사를 보기 좋게 정리합니다.",
     description:
-      "문화, 축제, 행사처럼 사람과 장소의 분위기가 먼저 남는 주제를 담습니다. 그날의 공기와 동선, 볼거리와 포인트를 한 번 더 꺼내 보기 쉽게 정리합니다.",
-    items: ["머물고 싶은 장면", "계절이 들썩이는 날", "사람 모이는 현장"],
+      "문화 공간, 계절 축제, 각종 행사를 다시 찾기 쉽게 정리하는 갈래입니다. 장소 분위기와 일정, 포인트를 한눈에 훑을 수 있게 남깁니다.",
+    items: ["문화와 공간", "축제와 시즌", "행사와 현장"],
   },
   {
     eyebrow: "세상의 기록",
-    title: "시간 너머의 풍경과 오늘의 파장을 함께 읽습니다.",
+    title: "역사, 이슈, 미스터리를 맥락 있게 정리합니다.",
     description:
-      "역사와 문화, 오늘의 이슈, 설명되지 않은 미스터리를 한 갈래로 묶습니다. 사실을 따라가되 맥락과 해석까지 같이 남겨 오래 읽히는 글을 지향합니다.",
-    items: ["시간 너머의 풍경", "오늘의 파장", "설명되지 않은 이야기"],
+      "역사와 문화, 오늘의 이슈, 미스터리와 전설을 배경과 해설까지 붙여 정리하는 갈래입니다. 흥미만 남기지 않고 맥락까지 같이 남깁니다.",
+    items: ["역사와 문화", "이슈와 해설", "미스터리와 전설"],
   },
   {
     eyebrow: "시장의 기록",
-    title: "숫자보다 흐름이 먼저 보이도록 적습니다.",
+    title: "주식과 크립토를 흐름 중심으로 읽습니다.",
     description:
-      "주식과 크립토를 단기 소음이 아니라 흐름, 배경, 심리의 결로 정리합니다. 급한 확신보다 다시 꺼내 볼 만한 기준점을 남깁니다.",
-    items: ["숫자 뒤의 흐름", "변동성의 한가운데"],
+      "짧은 등락보다 주식과 크립토의 흐름, 배경, 리스크를 기록하는 갈래입니다. 나중에 다시 꺼내 볼 기준점을 남기는 쪽에 가깝습니다.",
+    items: ["주식의 흐름", "크립토의 흐름"],
   },
   {
     eyebrow: "기술의 기록",
-    title: "새 기술과 좋은 해설을 천천히 해부합니다.",
+    title: "신기술, 리뷰, 분석 글을 다시 보기 좋게 남깁니다.",
     description:
-      "신기술 소식, 전문 유튜브 리뷰, 인상적인 글 분석을 한데 모읍니다. 한 번 보고 지나치지 않도록 핵심과 관점을 차분히 정리합니다.",
-    items: ["막 나온 기술의 기척", "화면 너머의 리뷰", "문장과 관점의 해부"],
+      "새 기술 소식, 전문 유튜브 리뷰, 좋은 글 분석을 핵심과 해설 중심으로 정리합니다. 실무 감각으로 다시 참고하기 좋은 메모를 지향합니다.",
+    items: ["신기술과 도구", "유튜브 리뷰", "글 분석과 해설"],
   },
   {
     eyebrow: "동그리의 기록",
-    title: "생각과 하루, 낯선 길 위의 감각을 적습니다.",
+    title: "개발, 여행, 일상을 동그리의 방식으로 기록합니다.",
     description:
-      "비동기적으로 쓰는 생각의 메모, 일상에서 건져 올린 장면, 여행에서 남는 인상을 담습니다. 정보보다 마음의 결이 오래 남는 글을 모읍니다.",
-    items: ["오래 남는 생각", "천천한 하루", "낯선 길의 기록"],
+      "개발하는 일과 프로그래밍, 여행에서 본 장면, 일상에서 남긴 메모를 동그리의 시선으로 적어두는 갈래입니다. 가볍게 흘려보내기보다 차분히 남깁니다.",
+    items: ["개발과 프로그래밍", "여행과 기록", "일상과 메모"],
   },
 ] as const;
 
@@ -793,7 +793,7 @@ export function SearchPage() {
         <Input
           value={draft}
           onChange={(event) => setDraft(event.target.value)}
-          placeholder="예: 축제, 미스터리, 비트코인, AI"
+          placeholder="예: 축제, 역사, 비트코인, 개발"
           aria-label="검색어"
         />
         <Button type="submit" className="simple-primary-button search-panel__button">
@@ -836,8 +836,8 @@ export function AboutPage() {
     <div className="simple-page">
       <ArchiveHeader
         eyebrow="소개"
-        title="기록의 갈래는 결로 부르고, 실제 주제는 글 안에서 더 또렷하게 찾게 만듭니다"
-        description="상위 갈래는 블로그의 분위기를 만들고, 하위 갈래는 직접적인 주제어를 조금 비켜간 이름으로 묶었습니다. 처음엔 감각으로 들어오고, 읽을수록 맥락이 남는 구조를 목표로 했습니다."
+        title="기록의 갈래는 보기 편하게, 이름은 바로 이해되게 정리합니다"
+        description="상위 갈래는 블로그의 큰 축을 보여주고, 하위 갈래는 문화와 공간, 역사와 문화, 개발과 프로그래밍처럼 한 번에 이해되는 이름으로 다듬었습니다."
       />
 
       <section className="featured-post">
@@ -845,12 +845,12 @@ export function AboutPage() {
           <div className="post-row__meta">
             <span className="simple-chip">메인은 최신 글</span>
             <span className="simple-chip">오른쪽은 기록의 갈래</span>
-            <span className="simple-chip">상위는 결, 하위는 장면</span>
+            <span className="simple-chip">이름은 바로 이해되게</span>
           </div>
-          <h2 className="featured-post__title">딱딱한 폴더 대신, 다시 찾아 들어가고 싶은 갈래 이름을 붙였습니다.</h2>
+          <h2 className="featured-post__title">읽는 사람도, 쓰는 사람도 바로 이해되는 갈래 이름으로 다시 다듬었습니다.</h2>
           <p className="featured-post__summary">
-            {SITE_TITLE}은 상위 갈래에서 블로그 전체의 결을 드러내고, 하위 갈래에서는 문화, 이슈, 시장, 기술, 일상 같은 직접적인
-            주제를 한 걸음 비켜간 이름으로 묶습니다. 공개 화면은 글이 먼저 보이고, 갈래는 오른쪽 트리에서 천천히 탐색하는 구성을 지향합니다.
+            {SITE_TITLE}은 상위 갈래로 큰 주제를 묶고, 하위 갈래는 문화와 공간, 역사와 문화, 주식의 흐름, 개발과 프로그래밍처럼
+            한 번에 파악되는 이름을 씁니다. 공개 화면은 글이 먼저 보이고, 갈래는 오른쪽 트리에서 차분하게 탐색하는 구성을 지향합니다.
           </p>
           <div className="article-page__actions">
             <a href={RSS_FEED_URL} className="simple-inline-link">
@@ -887,7 +887,7 @@ export function AboutPage() {
       <section className="list-section">
         <div className="list-section__header">
           <h2>지금 제안하는 기록의 갈래</h2>
-          <p>하위 이름도 직접적인 주제어를 그대로 쓰지 않고, 글의 분위기와 장면이 먼저 떠오르는 쪽으로 붙였습니다.</p>
+          <p>너무 꼬이지 않으면서도, 각 주제가 무엇을 다루는지 바로 보이도록 이름을 다시 정리했습니다.</p>
         </div>
         <div className="topic-grid">
           {ARCHIVE_GROUPS.map((group) => (
