@@ -4,6 +4,7 @@ import type {
   CategoryFeed,
   Post,
   PostSummary,
+  SearchPostsResult,
   TagFeed,
 } from "@donggeuri/shared";
 
@@ -21,7 +22,7 @@ function resolveApiBaseUrl() {
   throw new Error("VITE_API_BASE_URL must be configured for the public app.");
 }
 
-const API_BASE_URL = resolveApiBaseUrl();
+export const API_BASE_URL = resolveApiBaseUrl();
 
 export class ApiError extends Error {
   constructor(
@@ -89,4 +90,14 @@ export function getCategoryFeed(slug: string) {
 
 export function getTagFeed(slug: string) {
   return request<TagFeed>(`/api/public/tags/${slug}/posts`);
+}
+
+export function searchPosts(query: string) {
+  const params = new URLSearchParams();
+  params.set("q", query);
+  return request<SearchPostsResult>(`/api/public/search?${params.toString()}`);
+}
+
+export function getWorkerResourceUrl(path: string) {
+  return `${API_BASE_URL}${path.startsWith("/") ? path : `/${path}`}`;
 }

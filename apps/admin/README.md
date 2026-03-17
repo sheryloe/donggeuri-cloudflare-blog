@@ -4,6 +4,7 @@ Cloudflare Pages admin frontend for authentication, content operations, media up
 
 ## Run
 
+- Copy `apps/admin/.env.example` to `apps/admin/.env`, or run `pwsh ./scripts/setup-local-dev.ps1` from the repo root.
 - Set `VITE_API_BASE_URL` before starting the app. In local development the app falls back to `http://127.0.0.1:8787`, but deployed environments must set the variable explicitly.
 - `pnpm --filter @donggeuri/admin dev`
 - `pnpm --filter @donggeuri/admin build`

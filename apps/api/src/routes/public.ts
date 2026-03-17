@@ -7,6 +7,7 @@ import {
   getTagFeedBySlug,
   listCategories,
   listPublishedPosts,
+  searchPublishedPosts,
 } from "../lib/posts";
 import type { AppEnv } from "../types";
 
@@ -15,6 +16,16 @@ const publicRoutes = new Hono<AppEnv>();
 publicRoutes.get("/posts", async (c) => {
   const posts = await listPublishedPosts(c.env.DB);
   return ok(c, posts);
+});
+
+publicRoutes.get("/search", async (c) => {
+  const query = c.req.query("q")?.trim() ?? "";
+  const posts = query ? await searchPublishedPosts(c.env.DB, query) : [];
+
+  return ok(c, {
+    query,
+    posts,
+  });
 });
 
 publicRoutes.get("/posts/:slug", async (c) => {

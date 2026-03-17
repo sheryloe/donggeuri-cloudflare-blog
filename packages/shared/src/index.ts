@@ -99,6 +99,11 @@ export interface TagFeed {
   posts: PostSummary[];
 }
 
+export interface SearchPostsResult {
+  query: string;
+  posts: PostSummary[];
+}
+
 export interface ApiSuccess<T> {
   success: true;
   data: T;

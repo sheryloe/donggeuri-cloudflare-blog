@@ -4,6 +4,9 @@ Cloudflare Worker API for public content delivery and admin operations.
 
 ## Run
 
+- Copy `apps/api/.dev.vars.example` to `apps/api/.dev.vars`, or run `pwsh ./scripts/setup-local-dev.ps1` from the repo root.
+- Apply the local schema once before `wrangler dev --local`:
+  `pnpm --filter @donggeuri/api exec wrangler d1 migrations apply donggeuri-blog --local`
 - `pnpm --filter @donggeuri/api dev`
 - `pnpm --filter @donggeuri/api build`
 
@@ -15,6 +18,14 @@ Cloudflare Worker API for public content delivery and admin operations.
 - `ADMIN_PASSWORD_HASH`
 - `JWT_SECRET`
 - `R2_PUBLIC_BASE_URL`
+
+## Public Endpoints
+
+- `/api/public/posts`
+- `/api/public/search?q=cloudflare`
+- `/rss.xml`
+- `/sitemap.xml`
+- `/assets/*`
 
 ## Security Notes
 

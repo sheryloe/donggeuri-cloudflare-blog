@@ -25,20 +25,26 @@ Cloudflare Pages, Workers, D1, R2를 사용해 공개 블로그와 관리자 CMS
 
 ## 구현된 API
 
-- Public posts/categories/tags 조회
+- Public posts/categories/tags/search 조회
 - Admin login/logout/session
 - Admin posts CRUD
 - Admin media CRUD
 - Admin categories/tags CRUD
+- Worker RSS / sitemap XML
+- Worker asset proxy (`/assets/*`)
 
 ## 실행 방법
 
 ```bash
 pnpm install
+pwsh ./scripts/setup-local-dev.ps1
+pnpm --filter @donggeuri/api exec wrangler d1 migrations apply donggeuri-blog --local
 pnpm dev:api
 pnpm dev:web
 pnpm dev:admin
 ```
+
+- 로컬 설정 예제는 `apps/api/.dev.vars.example`, `apps/web/.env.example`, `apps/admin/.env.example`를 참고합니다.
 
 ## 다음 단계
 

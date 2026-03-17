@@ -3,6 +3,8 @@ import type { Context, Next } from "hono";
 
 import { ConfigurationError } from "./lib/auth";
 import { fail, ok } from "./lib/http";
+import { renderRssXml, renderSitemapXml } from "./lib/public-site";
+import { listCategories, listPublishedPosts, listTags } from "./lib/posts";
 import publicRoutes from "./routes/public";
 import adminRoutes from "./routes/admin";
 import type { AppEnv } from "./types";
@@ -109,6 +111,70 @@ app.use(
 );
 
 app.get("/health", (c) => ok(c, { status: "ok" }));
+
+app.get("/rss.xml", async (c) => {
+  const posts = await listPublishedPosts(c.env.DB);
+  const xml = renderRssXml({
+    siteUrl: c.env.PUBLIC_APP_ORIGIN,
+    title: "Donggri 기록들",
+    description:
+      "정보의 기록, 세상의 기록, 시장의 기록, 기술의 기록, 동그리의 기록이라는 다섯 칸 안에 문화와 축제, 역사와 이슈, 미스터리, 주식과 크립토, 신기술 리뷰, 생각과 여행을 담는 Donggri 기록들의 최신 글 피드입니다.",
+    posts,
+  });
+
+  return new Response(xml, {
+    headers: {
+      "Content-Type": "application/rss+xml; charset=UTF-8",
+      "Cache-Control": "public, max-age=900",
+    },
+  });
+});
+
+app.get("/sitemap.xml", async (c) => {
+  const [posts, categories, tags] = await Promise.all([
+    listPublishedPosts(c.env.DB),
+    listCategories(c.env.DB),
+    listTags(c.env.DB),
+  ]);
+
+  const xml = renderSitemapXml({
+    siteUrl: c.env.PUBLIC_APP_ORIGIN,
+    posts,
+    categories,
+    tags,
+  });
+
+  return new Response(xml, {
+    headers: {
+      "Content-Type": "application/xml; charset=UTF-8",
+      "Cache-Control": "public, max-age=900",
+    },
+  });
+});
+
+app.on(["GET", "HEAD"], "/assets/*", async (c) => {
+  const path = c.req.path.replace(/^\/assets\//, "").trim();
+
+  if (!path) {
+    return fail(c, 404, "ASSET_NOT_FOUND", "The requested asset does not exist.");
+  }
+
+  const object = await c.env.ASSETS.get(path);
+
+  if (!object) {
+    return fail(c, 404, "ASSET_NOT_FOUND", "The requested asset does not exist.");
+  }
+
+  const headers = new Headers();
+  object.writeHttpMetadata(headers);
+  headers.set("etag", object.httpEtag);
+  headers.set("Cache-Control", "public, max-age=3600");
+
+  return new Response(c.req.method === "HEAD" ? null : object.body, {
+    headers,
+  });
+});
+
 app.route("/api/public", publicRoutes);
 app.route("/api/admin", adminRoutes);
 

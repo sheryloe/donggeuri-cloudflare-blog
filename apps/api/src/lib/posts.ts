@@ -142,6 +142,81 @@ export async function listPublishedPosts(db: D1Database) {
   return result.results.map(mapPostSummary);
 }
 
+function normalizeSearchTerms(query: string) {
+  return query
+    .trim()
+    .toLowerCase()
+    .split(/\s+/)
+    .map((term) => term.trim())
+    .filter(Boolean)
+    .slice(0, 6);
+}
+
+export async function searchPublishedPosts(db: D1Database, query: string, limit = 20) {
+  const terms = normalizeSearchTerms(query);
+
+  if (!terms.length) {
+    return [];
+  }
+
+  const conditions = terms.map(
+    (_, index) => `
+      (
+        lower(p.title) LIKE ?${index * 6 + 1}
+        OR lower(COALESCE(p.subtitle, '')) LIKE ?${index * 6 + 2}
+        OR lower(COALESCE(p.excerpt, '')) LIKE ?${index * 6 + 3}
+        OR lower(COALESCE(p.content_json, '')) LIKE ?${index * 6 + 4}
+        OR EXISTS (
+          SELECT 1
+          FROM post_tags pt
+          INNER JOIN tags t ON t.id = pt.tag_id
+          WHERE pt.post_id = p.id
+            AND (
+              lower(t.name) LIKE ?${index * 6 + 5}
+              OR lower(t.slug) LIKE ?${index * 6 + 6}
+            )
+        )
+      )
+    `,
+  );
+
+  const params = terms.flatMap((term) => {
+    const value = `%${term}%`;
+    return [value, value, value, value, value, value];
+  });
+
+  const result = await db
+    .prepare(
+      `
+        SELECT DISTINCT
+          p.id,
+          p.slug,
+          p.title,
+          p.subtitle,
+          p.excerpt,
+          p.cover_image,
+          p.status,
+          p.published_at,
+          p.created_at,
+          p.updated_at,
+          c.id AS category_id,
+          c.slug AS category_slug,
+          c.name AS category_name,
+          c.description AS category_description
+        FROM posts p
+        LEFT JOIN categories c ON c.id = p.category_id
+        WHERE p.status = 'published'
+          AND ${conditions.join("\n          AND ")}
+        ORDER BY COALESCE(p.published_at, p.created_at) DESC
+        LIMIT ?${params.length + 1}
+      `,
+    )
+    .bind(...params, Math.max(1, Math.min(limit, 50)))
+    .all<Record<string, unknown>>();
+
+  return result.results.map(mapPostSummary);
+}
+
 export async function listAdminPosts(db: D1Database) {
   const result = await db
     .prepare(
